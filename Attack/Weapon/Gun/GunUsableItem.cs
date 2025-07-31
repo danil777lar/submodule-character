@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Gun : MonoBehaviour
+public class GunUsableItem : UsableItem
 {
     [SerializeField] private Transform shootPoint;
     [SerializeField] private Transform model;
@@ -10,28 +10,32 @@ public class Gun : MonoBehaviour
     [SerializeField] private Transform defaultPoint;
     [SerializeField] private Transform aimPoint;
     [Space]
-    [SerializeField] private Projectile projectilePrefab;
+    [SerializeField] private BulletProjectile projectilePrefab;
     [Space]
     [SerializeField] private UnityEvent onShoot;
 
     private Func<bool> _isAiming;
 
     public event Action EventShoot;
-    
-    public Gun Init(Func<bool> isAiming)
+
+    public override bool CanStartAction(int actionId)
     {
-        _isAiming = isAiming;
-        return this;
+        return true;
     }
-    
-    public void Shoot()
+
+    protected override void OnActionStarted()
     {
         if (CanShoot())
         {
             Instantiate(projectilePrefab).Init(shootPoint);
             EventShoot?.Invoke();
             onShoot.Invoke();
-        }
+        }   
+    }
+
+    protected override void OnActionStopped()
+    {
+        
     }
 
     public bool CanShoot()

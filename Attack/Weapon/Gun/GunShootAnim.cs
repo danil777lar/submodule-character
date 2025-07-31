@@ -12,11 +12,11 @@ public class GunShootAnim : MonoBehaviour
     
     private float _currentValue;
     private float _currentSpeed;
-    private Gun _gun;
+    private GunUsableItem _gun;
 
     private void Start()
     {
-        _gun = GetComponentInParent<Gun>();
+        _gun = GetComponentInParent<GunUsableItem>();
         _gun.EventShoot += OnShoot; 
     }
     

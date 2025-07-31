@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Projectile : MonoBehaviour
+public class BulletProjectile : Projectile
 {
     [SerializeField] private float speed = 100f;
     [SerializeField] private float lifeTime = 2f;
@@ -44,8 +44,14 @@ public class Projectile : MonoBehaviour
             direction = hit.normal; 
             hitten = true;
             
-            IProjectileTarget target = hit.collider.GetComponentInParent<IProjectileTarget>();
-            target?.OnHit(hit.point, hit.normal, transform.forward);
+            IDamageTarget target = hit.collider.GetComponentInParent<IDamageTarget>();
+            DamageData damageData = new DamageData
+            {
+                hitPoint = hit.point,
+                hitNormal = hit.normal,
+                hitDirection = transform.forward
+            };
+            target?.SendDamage(damageData);
         }
         
         transform.position = position;
