@@ -61,7 +61,7 @@ public class GunUsableItem : UsableItem
     {
         if (actionId == ACTION_SHOOT)
         {
-            if (shootCountPerAction < 0)
+            if (_isShooting && shootCountPerAction < 0)
             {
                 _isShooting = false;
             }
