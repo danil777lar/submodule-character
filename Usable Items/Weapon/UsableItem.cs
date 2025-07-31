@@ -8,24 +8,29 @@ public abstract class UsableItem : MonoBehaviour
     
     public void StartAction(int actionId)
     {
-        if (!_actions[actionId])
+        if (!IsActionInProgress(actionId))
         {
             _actions[actionId] = true;
-            OnActionStarted();
+            OnActionStarted(actionId);
         }
     }
 
     public void StopAction(int actionId)
     {
-        if (!_actions[actionId])
+        if (IsActionInProgress(actionId))
         {
             _actions[actionId] = false;
-            OnActionStopped();
+            OnActionStopped(actionId);
         }
+    }
+    
+    public bool IsActionInProgress(int actionId)
+    {
+        return _actions.ContainsKey(actionId) && _actions[actionId];
     }
 
     public abstract bool CanStartAction(int actionId);
-    
-    protected abstract void OnActionStarted();
-    protected abstract void OnActionStopped();
+
+    protected virtual void OnActionStarted(int actionId) { }
+    protected virtual void OnActionStopped(int actionId) { }
 }

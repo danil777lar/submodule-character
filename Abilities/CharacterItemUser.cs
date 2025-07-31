@@ -1,5 +1,6 @@
 using System;
 using Larje.Core;
+using Larje.Core.Tools.CompositeProperties;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Serialization;
@@ -11,10 +12,17 @@ namespace Larje.Character
         [SerializeField] private Transform itemRoot;
 
         private UsableItem _currentItem;
-        private Func<bool> _isAiming;
 
-        private bool IsAiming => _isAiming != null && _isAiming();
+        public void StartAction(int actionId)
+        {
+            _currentItem?.StartAction(actionId);
+        }
 
+        public void StopAction(int actionId)
+        {
+            _currentItem?.StopAction(actionId);
+        }
+        
         public void SetItem(string itemKey)
         {
             if (!string.IsNullOrEmpty(itemKey))
