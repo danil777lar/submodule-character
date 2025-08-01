@@ -43,6 +43,8 @@ namespace Larje.Character.Abilities
 
         private void Update()
         {
+            if (!Permitted) return;
+            
             if (Initialized)
             {
                 HandleInput();
@@ -51,6 +53,8 @@ namespace Larje.Character.Abilities
 
         private void FixedUpdate()
         {
+            if (!Permitted) return;
+            
             InterpolateMultiplier();
             TryExitSlide();
 

@@ -20,6 +20,8 @@ namespace Larje.Character
 
         public void StartAction(int actionId)
         {
+            if (!Permitted) return;
+            
             _currentItem?.StartAction(actionId);
         }
 
@@ -90,8 +92,8 @@ namespace Larje.Character
                 Destroy(_currentItem.gameObject);
             }
         }
-
-        private void Start()
+        
+        protected override void OnInitialized()
         {
             DIContainer.InjectTo(this);
             RemoveItem();

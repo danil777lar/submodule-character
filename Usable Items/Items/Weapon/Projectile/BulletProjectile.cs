@@ -4,6 +4,8 @@ using UnityEngine.Events;
 
 public class BulletProjectile : Projectile
 {
+    [SerializeField] private int damage = 10;
+    [Space]
     [SerializeField] private float speed = 100f;
     [SerializeField] private float lifeTime = 2f;
     [SerializeField] private float destroyDelay = 0.1f;
@@ -67,6 +69,7 @@ public class BulletProjectile : Projectile
             IDamageTarget target = hit.collider.GetComponentInParent<IDamageTarget>();
             DamageData damageData = new DamageData
             {
+                damage = damage,
                 hitPoint = hit.point,
                 hitNormal = hit.normal,
                 hitDirection = transform.forward

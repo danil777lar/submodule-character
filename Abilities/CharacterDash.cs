@@ -39,6 +39,8 @@ namespace Larje.Character.Abilities
 
         private void FixedUpdate()
         {
+            if (!Permitted) return;
+            
             if (Initialized)
             {
                 UpdateCooldown();

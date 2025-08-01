@@ -71,6 +71,8 @@ namespace Larje.Character.Abilities
 
         private void FixedUpdate()
         {
+            if (!Permitted) return;
+            
             if (Initialized)
             {
                 if (canWalk.Value)

@@ -27,6 +27,8 @@ namespace Larje.Character.Abilities
 
         public void JumpStart()
         {
+            if (!Permitted) return;
+            
             if (CanJump)
             {
                 EventJump?.Invoke();

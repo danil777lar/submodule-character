@@ -27,6 +27,8 @@ namespace Larje.Character
 
         private void Update()
         {
+            if (!Permitted) return;
+            
             if (Initialized)
             {
                 RotateTarget(bodyTarget);
