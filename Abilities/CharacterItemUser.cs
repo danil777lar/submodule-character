@@ -10,6 +10,8 @@ namespace Larje.Character
     public class CharacterItemUser : CharacterAbility
     {
         [SerializeField] private Transform itemRoot;
+        [SerializeField] private string overrideItemLayer;
+        [SerializeField] private UsePositionOverride usePositionOverride = UsePositionOverride.None;
 
         private UsableItem _currentItem;
 
@@ -43,6 +45,21 @@ namespace Larje.Character
                 _currentItem = Instantiate(itemPrefab, itemRoot);
                 _currentItem.transform.localPosition = Vector3.zero;
                 _currentItem.transform.localRotation = Quaternion.identity;
+
+                if (usePositionOverride == UsePositionOverride.Camera)
+                {
+                    Camera cam = Camera.main;
+                    _currentItem.SetUseOriginPosition(() => cam.transform.position);   
+                    _currentItem.SetUseTargetPosition(() => cam.transform.position + cam.transform.forward * 10f);
+                }
+                
+                if (!string.IsNullOrEmpty(overrideItemLayer))
+                {
+                    foreach (Transform child in _currentItem.GetComponentsInChildren<Transform>())
+                    {
+                        child.gameObject.layer = LayerMask.NameToLayer(overrideItemLayer);   
+                    }
+                }
             }
         }
 
@@ -58,6 +75,12 @@ namespace Larje.Character
         {
             DIContainer.InjectTo(this);
             RemoveItem();
+        }
+        
+        public enum UsePositionOverride
+        {
+            None,
+            Camera
         }
     }
 }

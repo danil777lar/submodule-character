@@ -7,6 +7,7 @@ public class BulletProjectile : Projectile
     [SerializeField] private float speed = 100f;
     [SerializeField] private float lifeTime = 2f;
     [SerializeField] private float destroyDelay = 0.1f;
+    [SerializeField] private GameObject modelHolder;
     [SerializeField] private LayerMask hitLayer;
     [Space] 
     [SerializeField] private UnityEvent onHit;
@@ -14,11 +15,17 @@ public class BulletProjectile : Projectile
     private bool _destroying;
     private float _currentLifetime;
     
-    public void Init(Transform shootPoint)
+    public void Init(Vector3 position, Vector3 direction, Vector3 modelStartPosition)
     {
         _currentLifetime = lifeTime;
-        transform.position = shootPoint.position;
-        transform.forward = shootPoint.forward;
+        
+        transform.position = position;
+        transform.forward = direction;
+        
+        if (modelHolder != null)
+        {
+            modelHolder.transform.position = modelStartPosition;
+        }
     }
 
     private void FixedUpdate()
@@ -29,6 +36,19 @@ public class BulletProjectile : Projectile
         }
         
         Move();
+    }
+
+    private void Update()
+    {
+        if (_destroying)
+        {
+            modelHolder.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            modelHolder.transform.localPosition = 
+                Vector3.Lerp(modelHolder.transform.localPosition, Vector3.zero, Time.deltaTime * 10f);   
+        }
     }
 
     private void Move()

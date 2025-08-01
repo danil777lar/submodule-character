@@ -102,7 +102,14 @@ public class GunUsableItem : UsableItem
     {
         if (CanShoot())
         {
-            Instantiate(projectilePrefab).Init(shootPoint);
+            Vector3 spawnPosition = UseOriginPosition?.Invoke() ?? shootPoint.position;
+            Vector3 spawnDirection = shootPoint.forward;
+            if (UseTargetPosition != null)
+            {
+                spawnDirection = UseTargetPosition.Invoke() - spawnPosition;
+            }
+
+            Instantiate(projectilePrefab).Init(spawnPosition, spawnDirection, shootPoint.position);
             EventShoot?.Invoke();
             onShoot.Invoke();
         }   
