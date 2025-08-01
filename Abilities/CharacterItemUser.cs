@@ -15,6 +15,9 @@ namespace Larje.Character
 
         private UsableItem _currentItem;
 
+        public PriotizedProperty<Vector3> OriginPosition;
+        public PriotizedProperty<Vector3> TargetPosition;
+
         public void StartAction(int actionId)
         {
             _currentItem?.StartAction(actionId);
@@ -49,8 +52,25 @@ namespace Larje.Character
                 if (usePositionOverride == UsePositionOverride.Camera)
                 {
                     Camera cam = Camera.main;
-                    _currentItem.SetUseOriginPosition(() => cam.transform.position);   
-                    _currentItem.SetUseTargetPosition(() => cam.transform.position + cam.transform.forward * 10f);
+                    _currentItem.UseOriginPosition = () => true;
+                    _currentItem.OriginPosition = () => cam.transform.position;
+                    _currentItem.UseTargetPosition = () => true;
+                    _currentItem.TargetPosition = () => cam.transform.position + cam.transform.forward * 10f;
+                }
+                else if (usePositionOverride == UsePositionOverride.ScriptDriven)
+                {
+                    _currentItem.UseOriginPosition = () => OriginPosition.TryGetValue(out _);
+                    _currentItem.OriginPosition = () =>
+                    {
+                        OriginPosition.TryGetValue(out Vector3 originPosition);
+                        return originPosition;
+                    };
+                    _currentItem.UseTargetPosition = () => TargetPosition.TryGetValue(out _);
+                    _currentItem.TargetPosition = () =>
+                    {
+                        TargetPosition.TryGetValue(out Vector3 targetPosition);
+                        return targetPosition;
+                    };
                 }
                 
                 if (!string.IsNullOrEmpty(overrideItemLayer))
@@ -80,7 +100,8 @@ namespace Larje.Character
         public enum UsePositionOverride
         {
             None,
-            Camera
+            Camera,
+            ScriptDriven
         }
     }
 }
