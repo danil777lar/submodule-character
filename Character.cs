@@ -3,6 +3,7 @@ using System.Collections;
 using MoreMountains.Tools;
 using System.Collections.Generic;
 using System;
+using Larje.Core.Tools.CompositeProperties;
 using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
@@ -11,6 +12,7 @@ namespace Larje.Character
 	public class Character : MonoBehaviour
 	{
 		[field: SerializeField] public Type CharacterType { get; private set; }
+		public BoolComposite IsActive = new BoolComposite();
 		
 		private Health _health;
 		

@@ -187,15 +187,20 @@ public class CursorService : Service
         return Mathf.Clamp(value, min, max);
     }
 
-    public bool TryGetCurrentCamera(out ICursorCamera camera)
+    public bool IsCurrent(ICursorCamera cam)
+    {
+        return TryGetCurrentCamera(out var c) && c == cam;
+    }
+
+    public bool TryGetCurrentCamera(out ICursorCamera cam)
     {
         if (_cameras.Count > 0)
         {
-            camera = _cameras.OrderBy(x => x.Priority).Last();
+            cam = _cameras.OrderBy(x => x.Priority).Last();
             return true;
         }
 
-        camera = null;
+        cam = null;
         return false;
     }
 

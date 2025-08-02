@@ -5,7 +5,7 @@ namespace Larje.Character
     public class CharacterAbility : MonoBehaviour
     {
         public bool Initialized { get; private set; }
-        public bool Permitted => character.IsAlive; 
+        public bool Permitted => character.IsAlive && character.IsActive.Value;
         
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }

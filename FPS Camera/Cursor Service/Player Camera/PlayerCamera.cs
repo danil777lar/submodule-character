@@ -26,6 +26,7 @@ public class PlayerCamera : MonoBehaviour, ICursorCamera
     [InjectService] private CursorService _cursorService;
     
     public int Priority => virtualCamera.Priority;
+    public bool IsActive => _cursorService.IsCurrent(this);
     public Vector3 DefaultDirection { get; private set; }
     public Vector2 RotationLimitMin => limitMin;
     public Vector2 RotationLimitMax => limitMax;
