@@ -1,4 +1,5 @@
 using System;
+using Larje.Character;
 using Larje.Core.Tools.CompositeProperties;
 using MoreMountains.Tools;
 using UnityEditor;
@@ -28,6 +29,9 @@ public class CharacterPhysics : MonoBehaviour
     [SerializeField] private bool useSlopeLimit = true;
     [SerializeField] private float slopeLimit = 45f;
     
+    [Header("Logic")]
+    [SerializeField] private bool resetOnDeath = true;
+    
     [Header("Gizmos")]
     [SerializeField] private bool drawGizmos = false;
     [SerializeField] private Color gizmoColor = Color.white.SetAlpha(0.5f);
@@ -37,7 +41,8 @@ public class CharacterPhysics : MonoBehaviour
     private float _colliderRadiusDefault;
     
     private RaycastHit _groundHit;
-    
+
+    private Character _character;
     private Rigidbody _rigidbody;
     private CapsuleCollider _collider;
 
@@ -119,13 +124,16 @@ public class CharacterPhysics : MonoBehaviour
     
     private void Awake()
     {
+        _character = GetComponent<Character>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
 
         _colliderHeightDefault = _collider.height;
         _colliderRadiusDefault = _collider.radius;
+        
+        _character.EventDeath += OnDeath;
     }
-    
+
     private void FixedUpdate()
     {
         UpdateColliderSize();
@@ -260,5 +268,13 @@ public class CharacterPhysics : MonoBehaviour
         }
 
         return hitten;
+    }
+    
+    private void OnDeath()
+    {
+        if (resetOnDeath)   
+        {
+            ResetVelocity();
+        }
     }
 }

@@ -16,9 +16,17 @@ namespace Larje.Character
 		
 		public bool IsAlive => _health == null || _health.IsAlive;
 
+		public event Action EventDeath;
+
 		private void Awake()
 		{
 			_health = GetComponentInChildren<Health>();
+			_health.EventDeath += OnDeath;
+		}
+
+		private void OnDeath(DamageData data)
+		{
+			EventDeath?.Invoke();
 		}
 	}
 

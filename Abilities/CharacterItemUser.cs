@@ -13,6 +13,8 @@ namespace Larje.Character
         [SerializeField] private string overrideItemLayer;
         [SerializeField] private UsePositionOverride usePositionOverride = UsePositionOverride.None;
 
+        [InjectService] private CursorService _cursorService;
+        
         private UsableItem _currentItem;
 
         public PriotizedProperty<Vector3> OriginPosition;
@@ -59,6 +61,13 @@ namespace Larje.Character
                     _currentItem.UseTargetPosition = () => true;
                     _currentItem.TargetPosition = () => cam.transform.position + cam.transform.forward * 10f;
                 }
+                else if (usePositionOverride == UsePositionOverride.Cursor && _cursorService != null)
+                {
+                    _currentItem.UseOriginPosition = () => true;
+                    _currentItem.OriginPosition = () => _cursorService.Origin;
+                    _currentItem.UseTargetPosition = () => true;
+                    _currentItem.TargetPosition = () => _cursorService.Origin + _cursorService.Direction * 10f;
+                }
                 else if (usePositionOverride == UsePositionOverride.ScriptDriven)
                 {
                     _currentItem.UseOriginPosition = () => OriginPosition.TryGetValue(out _);
@@ -103,6 +112,7 @@ namespace Larje.Character
         {
             None,
             Camera,
+            Cursor,
             ScriptDriven
         }
     }
