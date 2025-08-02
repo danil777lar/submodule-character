@@ -4,6 +4,7 @@ using System.Linq;
 using Cinemachine;
 using Larje.Core;
 using MoreMountains.Tools;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 [BindService(typeof(CursorService))]
@@ -20,6 +21,7 @@ public class CursorService : Service
     private Camera _camera;
     private Vector2 _rotation = Vector2.zero;
     private Vector2 _delta;
+    private ICursorCamera _lastCamera;
     private List<Func<bool>> _isVisible = new List<Func<bool>>();
     private List<ICursorCamera> _cameras = new List<ICursorCamera>();
     private Dictionary<Action<float>, CallbackUpdateType> _onCursorUpdated = new Dictionary<Action<float>, CallbackUpdateType>();
@@ -102,8 +104,11 @@ public class CursorService : Service
 
     private void Update()
     {
-        _delta += _inputService.GetActions<InputSystem_Actions.PlayerActions>().Look.ReadValue<Vector2>();
-        
+        if (TryGetCurrentCamera(out ICursorCamera cursorCamera) && cursorCamera.Permitted)
+        {
+            _delta += _inputService.GetActions<InputSystem_Actions.PlayerActions>().Look.ReadValue<Vector2>();
+        }
+
         if (cursorUpdateType == CursorUpdateType.Normal)
         {
             UpdateCursor(Time.deltaTime);
@@ -132,16 +137,29 @@ public class CursorService : Service
         SendUpdateEvent(CallbackUpdateType.BeforeUpdate);
         if (TryGetCurrentCamera(out ICursorCamera cursorCamera))
         {
-            Vector2 delta = _delta;
-            _delta -= delta;
-            
-            _rotation.y = RotateAxis(_rotation.y, delta.x, cursorCamera.RotationLimitMin.y, cursorCamera.RotationLimitMax.y);
-            _rotation.x = RotateAxis(_rotation.x, -delta.y, cursorCamera.RotationLimitMin.x, cursorCamera.RotationLimitMax.x);
+            if (_lastCamera != null && _lastCamera != cursorCamera)
+            {
+                _delta = Vector2.zero;
+                _rotation = Vector2.zero;
+                cursorCamera.Select();
+                Direction = cursorCamera.DefaultDirection;
+            }
+            else
+            {
+                Vector2 delta = _delta;
+                _delta -= delta;
 
-            Direction = cursorCamera.DefaultDirection;
-            Direction = Quaternion.AngleAxis(_rotation.y, Vector3.up) * Direction;
-            Direction = Quaternion.AngleAxis(-_rotation.x, Vector3.Cross(Direction, Vector3.up)) * Direction;
-            
+                _rotation.y = RotateAxis(_rotation.y, delta.x, cursorCamera.RotationLimitMin.y,
+                    cursorCamera.RotationLimitMax.y);
+                _rotation.x = RotateAxis(_rotation.x, -delta.y, cursorCamera.RotationLimitMin.x,
+                    cursorCamera.RotationLimitMax.x);
+
+                Direction = cursorCamera.DefaultDirection;
+                Direction = Quaternion.AngleAxis(_rotation.y, Vector3.up) * Direction;
+                Direction = Quaternion.AngleAxis(-_rotation.x, Vector3.Cross(Direction, Vector3.up)) * Direction;
+            }
+
+            _lastCamera = cursorCamera;
             SendUpdateEvent(CallbackUpdateType.AfterUpdate);    
         }
     }

@@ -31,6 +31,7 @@ public class CharacterPhysics : MonoBehaviour
     
     [Header("Logic")]
     [SerializeField] private bool resetOnDeath = true;
+    [SerializeField] private bool kinematicOnDeath = true;
     
     [Header("Gizmos")]
     [SerializeField] private bool drawGizmos = false;
@@ -275,6 +276,11 @@ public class CharacterPhysics : MonoBehaviour
         if (resetOnDeath)   
         {
             ResetVelocity();
+        }
+
+        if (kinematicOnDeath)
+        {
+            _rigidbody.isKinematic = true;
         }
     }
 }
