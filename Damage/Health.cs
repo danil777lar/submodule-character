@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Health : MonoBehaviour, IDamageTarget
 {
     [SerializeField] private int initialHealth;
-    [Space] 
-    [SerializeField] private UnityEvent onDeath;
+    [SerializeField] private List<GameObject> spawnOnDamage;
+    [SerializeField] private List<GameObject> spawnOnDeath;
     
     private int _currentHealth;
     
@@ -20,8 +21,13 @@ public class Health : MonoBehaviour, IDamageTarget
     {
         if (IsAlive)
         {
+            damageData.damagedTargets ??= new List<IDamageTarget>();
+            damageData.damagedTargets.Add(this);
+            
             _currentHealth -= damageData.damage;
+            SpawnEffects(spawnOnDamage, damageData);
             EventDamage?.Invoke(damageData);
+            
             if (_currentHealth <= 0)
             {
                 Death(damageData);
@@ -36,7 +42,19 @@ public class Health : MonoBehaviour, IDamageTarget
 
     private void Death(DamageData damageData)
     {
-        onDeath?.Invoke();
+        SpawnEffects(spawnOnDeath, damageData);
         EventDeath?.Invoke(damageData);
+    }
+    
+    private void SpawnEffects(List<GameObject> prefabs, DamageData damageData)
+    {
+        foreach (GameObject prefab in prefabs)
+        {
+            GameObject go = Instantiate(prefab, transform.parent);
+            if (go.TryGetComponent(out IDamageTarget target))
+            {
+                target.SendDamage(damageData);
+            }
+        }
     }
 }
