@@ -11,10 +11,6 @@ public class GunUsableItem : UsableItem
     [SerializeField] private float shootDelay = 0.5f;
     [Space]
     [SerializeField] private Transform shootPoint;
-    [SerializeField] private Transform model;
-    [Space] 
-    [SerializeField] private Transform defaultPoint;
-    [SerializeField] private Transform aimPoint;
     [Space]
     [SerializeField] private BulletProjectile projectilePrefab;
     [Space]
@@ -71,7 +67,6 @@ public class GunUsableItem : UsableItem
     private void Update()
     {
         UpdateShoot();
-        model.localPosition = Vector3.Lerp(model.localPosition, GetCurrentPoint().localPosition, Time.deltaTime * 10f);
     }
 
     private void UpdateShoot()
@@ -118,10 +113,5 @@ public class GunUsableItem : UsableItem
             EventShoot?.Invoke();
             onShoot.Invoke();
         }   
-    }
-
-    private Transform GetCurrentPoint()
-    {
-        return IsActionInProgress(ACTION_AIM) ? aimPoint : defaultPoint;
     }
 }
