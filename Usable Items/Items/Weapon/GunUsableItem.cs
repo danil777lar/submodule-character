@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,22 +9,43 @@ public class GunUsableItem : UsableItem
     public const int ACTION_AIM = 1;
 
     [SerializeField] private int shootCountPerAction = 1;
+    [SerializeField] private int ammoCapacity = 8;
     [SerializeField] private float shootDelay = 0.5f;
+    [SerializeField] private float equipDuration = 0.5f;
+    [SerializeField] private float reloadDuration = 2f;
     [Space]
     [SerializeField] private Transform shootPoint;
     [Space]
     [SerializeField] private BulletProjectile projectilePrefab;
     [Space]
     [SerializeField] private UnityEvent onShoot;
-    
+
     private bool _isShooting;
     private int _currentShootCount;
+    private int _currentAmmo;
+    private float _equipTime = 0f;
+    private float _unequipTime = 0f;
     private float _currentDelay;
 
     public bool IsShootInProgress => _currentDelay > 0f;
     public float ShootProgress => 1f - (_currentDelay / shootDelay);
-    
+    public float EquipProgress => _equipTime;
+    public float UnequipProgress => _unequipTime;
+    public float ReloadProgress { get; private set; }
+
+
     public event Action EventShoot;
+
+    public override void Equip()
+    {
+        DOVirtual.Float(0f, 1f, equipDuration, x => _equipTime = x);
+    }
+
+    public override void Unequip(Action onComplete)
+    {
+        DOVirtual.Float(0f, 1f, equipDuration, x => _unequipTime = x)
+            .OnComplete(() => onComplete?.Invoke());
+    }
 
     public override bool CanStartAction(int actionId)
     {
@@ -40,7 +62,7 @@ public class GunUsableItem : UsableItem
     
     public bool CanShoot()
     {
-        return gameObject.activeInHierarchy && enabled;
+        return gameObject.activeInHierarchy && enabled && EquipProgress >= 1f && UnequipProgress <= 0f && ReloadProgress <= 0f;
     }
 
     protected override void OnActionStarted(int actionId)
@@ -67,6 +89,11 @@ public class GunUsableItem : UsableItem
         }
     }
 
+    private void Start()
+    {
+        _currentAmmo =  ammoCapacity;
+    }
+
     private void Update()
     {
         UpdateShoot();
@@ -84,9 +111,16 @@ public class GunUsableItem : UsableItem
                 }
                 else
                 {
-                    _currentDelay = shootDelay;
-                    _currentShootCount--;
-                    Shoot();   
+                    if (_currentAmmo <= 0)
+                    {
+                        Reload();
+                    }
+                    else
+                    {
+                        _currentDelay = shootDelay;
+                        _currentShootCount--;
+                        Shoot();   
+                    }
                 }
             }
             else
@@ -100,6 +134,7 @@ public class GunUsableItem : UsableItem
     {
         if (CanShoot())
         {
+            _currentAmmo--;
             Vector3 spawnPosition = shootPoint.position;
             if (OriginPosition != null && UseOriginPosition != null && UseOriginPosition.Invoke())
             {
@@ -113,8 +148,22 @@ public class GunUsableItem : UsableItem
             }
 
             Instantiate(projectilePrefab).Init(spawnPosition, spawnDirection, shootPoint.position);
+            
             EventShoot?.Invoke();
             onShoot.Invoke();
         }   
+    }
+
+    private void Reload()
+    {
+        if (CanShoot())
+        {
+            DOVirtual.Float(0f, 1f, reloadDuration, x => ReloadProgress = x)
+                .OnComplete(() =>
+                {
+                    _currentAmmo = ammoCapacity;
+                    ReloadProgress = 0f;
+                });
+        }
     }
 }

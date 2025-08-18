@@ -39,6 +39,21 @@ public class GunAnimation : MonoBehaviour
 
     private AnimationType GetCurrentAnimation()
     {
+        if (_gun.EquipProgress < 1f)
+        {
+            return AnimationType.Equip;
+        }
+
+        if (_gun.UnequipProgress > 0f)
+        {
+            return AnimationType.Unequip;
+        }
+
+        if (_gun.ReloadProgress > 0f)
+        {
+            return AnimationType.Reload;
+        }
+        
         return _gun.IsShootInProgress ? AnimationType.Shoot :  AnimationType.Idle;
     }
 
@@ -48,10 +63,10 @@ public class GunAnimation : MonoBehaviour
         {
             case AnimationType.Idle: return 0f;
             case AnimationType.Aim: return 0f;
-            case AnimationType.Equip: return 0f;
-            case AnimationType.Unequip: return 0f;
+            case AnimationType.Equip: return _gun.EquipProgress;
+            case AnimationType.Unequip: return 1f - _gun.UnequipProgress;
             case AnimationType.Shoot: return _gun.ShootProgress;
-            case AnimationType.Reload: return 0f;
+            case AnimationType.Reload: return _gun.ReloadProgress;
         }
 
         return 0f;

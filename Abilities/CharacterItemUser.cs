@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Larje.Core;
 using Larje.Core.Tools.CompositeProperties;
 using UnityEngine;
@@ -46,66 +47,77 @@ namespace Larje.Character
 
         public void SetItem(UsableItem itemPrefab)
         {
-            RemoveItem();
-            if (itemPrefab != null)
+            RemoveItem(() =>
             {
-                _currentItem = Instantiate(itemPrefab, itemRoot);
-                _currentItem.transform.localPosition = Vector3.zero;
-                _currentItem.transform.localRotation = Quaternion.identity;
+                if (itemPrefab != null)
+                {
+                    _currentItem = Instantiate(itemPrefab, itemRoot);
+                    _currentItem.Equip();
+                    _currentItem.transform.localPosition = Vector3.zero;
+                    _currentItem.transform.localRotation = Quaternion.identity;
 
-                if (usePositionOverride == UsePositionOverride.Camera)
-                {
-                    Camera cam = Camera.main;
-                    _currentItem.UseOriginPosition = () => true;
-                    _currentItem.OriginPosition = () => cam.transform.position;
-                    _currentItem.UseTargetPosition = () => true;
-                    _currentItem.TargetPosition = () => cam.transform.position + cam.transform.forward * 10f;
-                }
-                else if (usePositionOverride == UsePositionOverride.Cursor && _cursorService != null)
-                {
-                    _currentItem.UseOriginPosition = () => true;
-                    _currentItem.OriginPosition = () => _cursorService.Origin;
-                    _currentItem.UseTargetPosition = () => true;
-                    _currentItem.TargetPosition = () => _cursorService.Origin + _cursorService.Direction * 10f;
-                }
-                else if (usePositionOverride == UsePositionOverride.ScriptDriven)
-                {
-                    _currentItem.UseOriginPosition = () => OriginPosition.TryGetValue(out _);
-                    _currentItem.OriginPosition = () =>
+                    if (usePositionOverride == UsePositionOverride.Camera)
                     {
-                        OriginPosition.TryGetValue(out Vector3 originPosition);
-                        return originPosition;
-                    };
-                    _currentItem.UseTargetPosition = () => TargetPosition.TryGetValue(out _);
-                    _currentItem.TargetPosition = () =>
+                        Camera cam = Camera.main;
+                        _currentItem.UseOriginPosition = () => true;
+                        _currentItem.OriginPosition = () => cam.transform.position;
+                        _currentItem.UseTargetPosition = () => true;
+                        _currentItem.TargetPosition = () => cam.transform.position + cam.transform.forward * 10f;
+                    }
+                    else if (usePositionOverride == UsePositionOverride.Cursor && _cursorService != null)
                     {
-                        TargetPosition.TryGetValue(out Vector3 targetPosition);
-                        return targetPosition;
-                    };
-                }
-                
-                if (!string.IsNullOrEmpty(overrideItemLayer))
-                {
-                    foreach (Transform child in _currentItem.GetComponentsInChildren<Transform>())
+                        _currentItem.UseOriginPosition = () => true;
+                        _currentItem.OriginPosition = () => _cursorService.Origin;
+                        _currentItem.UseTargetPosition = () => true;
+                        _currentItem.TargetPosition = () => _cursorService.Origin + _cursorService.Direction * 10f;
+                    }
+                    else if (usePositionOverride == UsePositionOverride.ScriptDriven)
                     {
-                        child.gameObject.layer = LayerMask.NameToLayer(overrideItemLayer);   
+                        _currentItem.UseOriginPosition = () => OriginPosition.TryGetValue(out _);
+                        _currentItem.OriginPosition = () =>
+                        {
+                            OriginPosition.TryGetValue(out Vector3 originPosition);
+                            return originPosition;
+                        };
+                        _currentItem.UseTargetPosition = () => TargetPosition.TryGetValue(out _);
+                        _currentItem.TargetPosition = () =>
+                        {
+                            TargetPosition.TryGetValue(out Vector3 targetPosition);
+                            return targetPosition;
+                        };
+                    }
+
+                    if (!string.IsNullOrEmpty(overrideItemLayer))
+                    {
+                        foreach (Transform child in _currentItem.GetComponentsInChildren<Transform>())
+                        {
+                            child.gameObject.layer = LayerMask.NameToLayer(overrideItemLayer);
+                        }
                     }
                 }
-            }
+            });
         }
 
-        public void RemoveItem()
+        public void RemoveItem(Action onRemoved)
         {
             if (_currentItem != null)
             {
-                Destroy(_currentItem.gameObject);
+                _currentItem.Unequip(() =>
+                {
+                    Destroy(_currentItem.gameObject);
+                    onRemoved?.Invoke();
+                });
+            }
+            else
+            {
+                onRemoved?.Invoke();
             }
         }
         
         protected override void OnInitialized()
         {
             DIContainer.InjectTo(this);
-            RemoveItem();
+            RemoveItem(() => {});
         }
         
         public enum UsePositionOverride

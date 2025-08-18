@@ -28,6 +28,8 @@ public abstract class UsableItem : MonoBehaviour
         return _actions.ContainsKey(actionId) && _actions[actionId];
     }
 
+    public abstract void Equip();
+    public abstract void Unequip(Action onComplete);
     public abstract bool CanStartAction(int actionId);
 
     protected virtual void OnActionStarted(int actionId) { }
