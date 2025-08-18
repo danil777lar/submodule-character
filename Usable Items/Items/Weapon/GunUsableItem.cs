@@ -19,6 +19,9 @@ public class GunUsableItem : UsableItem
     private bool _isShooting;
     private int _currentShootCount;
     private float _currentDelay;
+
+    public bool IsShootInProgress => _currentDelay > 0f;
+    public float ShootProgress => 1f - (_currentDelay / shootDelay);
     
     public event Action EventShoot;
 
