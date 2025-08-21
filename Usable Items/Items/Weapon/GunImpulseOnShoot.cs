@@ -14,7 +14,10 @@ public class GunImpulseOnShoot : MonoBehaviour
         _gun = GetComponent<GunUsableItem>();
         _shaker = GetComponentInParent<Character>().GetComponentInChildren<FPSCameraShaker>();
 
-        _gun.EventShoot += OnShoot;
+        if (_shaker != null)
+        {
+            _gun.EventShoot += OnShoot;
+        }
     }
 
     private void OnShoot()
