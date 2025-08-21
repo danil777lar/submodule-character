@@ -18,6 +18,7 @@ namespace Larje.Character
         
         private UsableItem _currentItem;
 
+        public UsableItem CurrentItem => _currentItem;
         public PriotizedProperty<Vector3> OriginPosition;
         public PriotizedProperty<Vector3> TargetPosition;
 

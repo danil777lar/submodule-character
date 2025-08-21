@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class GunUsableItem : UsableItem
 {
@@ -13,6 +14,11 @@ public class GunUsableItem : UsableItem
     [SerializeField] private float shootDelay = 0.5f;
     [SerializeField] private float equipDuration = 0.5f;
     [SerializeField] private float reloadDuration = 2f;
+    [Space] 
+    [SerializeField] private float minSpread = 0f;
+    [SerializeField] private float maxSpread = 10f;
+    [SerializeField] private float addSpreadOnShoot = 5f;
+    [SerializeField] private float spreadDecreaseSpeed = 5f;
     [Space]
     [SerializeField] private Transform shootPoint;
     [Space]
@@ -23,11 +29,13 @@ public class GunUsableItem : UsableItem
     private bool _isShooting;
     private int _currentShootCount;
     private int _currentAmmo;
+    private float _spreadAngle = 0f;
     private float _equipTime = 0f;
     private float _unequipTime = 0f;
     private float _currentDelay;
 
     public bool IsShootInProgress => _currentDelay > 0f;
+    public float SpreadAngle => _spreadAngle; 
     public float ShootProgress => 1f - (_currentDelay / shootDelay);
     public float EquipProgress => _equipTime;
     public float UnequipProgress => _unequipTime;
@@ -97,6 +105,7 @@ public class GunUsableItem : UsableItem
     private void Update()
     {
         UpdateShoot();
+        UpdateSpread();
     }
 
     private void UpdateShoot()
@@ -129,6 +138,21 @@ public class GunUsableItem : UsableItem
             }
         }
     }
+    
+    private void UpdateSpread()
+    {
+        if (_spreadAngle > minSpread)
+        {
+            _spreadAngle -= spreadDecreaseSpeed * Time.deltaTime;
+            _spreadAngle = Mathf.Clamp(_spreadAngle, minSpread, maxSpread);
+        }
+    }
+
+    private void AddSpread()
+    {
+        _spreadAngle += addSpreadOnShoot;
+        _spreadAngle = Mathf.Clamp(_spreadAngle, minSpread, maxSpread);
+    }
 
     private void Shoot()
     {
@@ -146,12 +170,33 @@ public class GunUsableItem : UsableItem
             {
                 spawnDirection = TargetPosition.Invoke() - spawnPosition;
             }
-
+            spawnDirection = ApplySpread(spawnDirection,  _spreadAngle);
+            
             Instantiate(projectilePrefab).Init(spawnPosition, spawnDirection, shootPoint.position);
+            AddSpread();
             
             EventShoot?.Invoke();
             onShoot.Invoke();
         }   
+    }
+    
+    private Vector3 ApplySpread(Vector3 direction, float halfAngleDeg)
+    {
+        direction = direction.normalized;
+        
+        float phi = Random.value * 2f * Mathf.PI;
+        
+        float cosA = Mathf.Cos(halfAngleDeg * Mathf.Deg2Rad);
+        float cosT = Mathf.Lerp(1f, cosA, Random.value);
+        float sinT = Mathf.Sqrt(1f - cosT * cosT);
+        
+        Vector3 tmp   = (Mathf.Abs(direction.y) < 0.999f) ? Vector3.up : Vector3.right;
+        Vector3 right = Vector3.Cross(tmp, direction).normalized;
+        Vector3 up    = Vector3.Cross(direction, right);
+
+        return (right * (sinT * Mathf.Cos(phi)) +
+                up    * (sinT * Mathf.Sin(phi)) +
+                direction * cosT).normalized;
     }
 
     private void Reload()
