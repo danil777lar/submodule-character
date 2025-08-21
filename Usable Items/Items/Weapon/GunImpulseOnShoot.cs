@@ -1,0 +1,24 @@
+using Cinemachine;
+using Larje.Character;
+using UnityEngine;
+
+public class GunImpulseOnShoot : MonoBehaviour
+{
+    [SerializeField] private FPSCameraShakeAnimation shootAnim; 
+    
+    private GunUsableItem _gun;
+    private FPSCameraShaker _shaker;
+    
+    private void Start()
+    {
+        _gun = GetComponent<GunUsableItem>();
+        _shaker = GetComponentInParent<Character>().GetComponentInChildren<FPSCameraShaker>();
+
+        _gun.EventShoot += OnShoot;
+    }
+
+    private void OnShoot()
+    {
+        _shaker.AddShake(new FPSCameraShaker.Shake(shootAnim, false, () => 1f, () => 1f));
+    }
+}
