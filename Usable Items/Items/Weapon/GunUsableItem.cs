@@ -206,6 +206,7 @@ public class GunUsableItem : UsableItem
             DOVirtual.Float(0f, 1f, reloadDuration, x => ReloadProgress = x)
                 .OnComplete(() =>
                 {
+                    _isShooting = false;
                     _currentAmmo = ammoCapacity;
                     ReloadProgress = 0f;
                 });
