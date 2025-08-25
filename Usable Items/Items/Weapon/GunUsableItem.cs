@@ -9,19 +9,22 @@ public class GunUsableItem : UsableItem
     public const int ACTION_SHOOT = 0;
     public const int ACTION_AIM = 1;
 
+    [Header("Shoot")]
     [SerializeField] private int shootCountPerAction = 1;
     [SerializeField] private int ammoCapacity = 8;
     [SerializeField] private float shootDelay = 0.5f;
     [SerializeField] private float equipDuration = 0.5f;
     [SerializeField] private float reloadDuration = 2f;
-    [Space] 
+    [Header("Aim")]
+    [SerializeField] private float aimDuration = 0.3f;
+    [SerializeField] private float spreadMultiplierOnAim = 0f;
+    [Header("Spread")] 
     [SerializeField] private float minSpread = 0f;
     [SerializeField] private float maxSpread = 10f;
     [SerializeField] private float addSpreadOnShoot = 5f;
     [SerializeField] private float spreadDecreaseSpeed = 5f;
     [Space]
     [SerializeField] private Transform shootPoint;
-    [Space]
     [SerializeField] private BulletProjectile projectilePrefab;
     [Space]
     [SerializeField] private UnityEvent onShoot;
@@ -30,15 +33,16 @@ public class GunUsableItem : UsableItem
     private bool _isAiming;
     private int _currentShootCount;
     private int _currentAmmo;
+    private float _aimingProgress;
     private float _spreadAngle = 0f;
     private float _equipTime = 0f;
     private float _unequipTime = 0f;
     private float _currentDelay;
 
     public bool IsShootInProgress => _currentDelay > 0f;
-    public bool IsAiming => _isAiming;
     public int CurrentAmmo => _currentAmmo;
     public int TotalAmmo => ammoCapacity;
+    public float AimingProgress => _aimingProgress;
     public float SpreadAngle => _spreadAngle; 
     public float ShootProgress => 1f - (_currentDelay / shootDelay);
     public float EquipProgress => _equipTime;
@@ -113,12 +117,13 @@ public class GunUsableItem : UsableItem
 
     private void Start()
     {
-        _currentAmmo =  ammoCapacity;
+        _currentAmmo = ammoCapacity;
     }
 
     private void Update()
     {
         UpdateReload();
+        UpdateAiming();
         UpdateShoot();
         UpdateSpread();
     }
@@ -129,6 +134,13 @@ public class GunUsableItem : UsableItem
         {
             Reload();
         }
+    }
+
+    private void UpdateAiming()
+    {
+        float delta = (1f / aimDuration) * (_isAiming ? 1f : -1f) * Time.deltaTime;
+        _aimingProgress += delta;
+        _aimingProgress = Mathf.Clamp01(_aimingProgress);
     }
 
     private void UpdateShoot()
@@ -186,7 +198,9 @@ public class GunUsableItem : UsableItem
             {
                 spawnDirection = TargetPosition.Invoke() - spawnPosition;
             }
-            spawnDirection = ApplySpread(spawnDirection,  _spreadAngle);
+
+            float totalSpread = _spreadAngle * Mathf.Lerp(1f, spreadMultiplierOnAim, _aimingProgress);
+            spawnDirection = ApplySpread(spawnDirection, totalSpread);
             
             Instantiate(projectilePrefab).Init(spawnPosition, spawnDirection, shootPoint.position);
             AddSpread();
@@ -219,7 +233,8 @@ public class GunUsableItem : UsableItem
     {
         if (CanShoot())
         {
-            _isShooting  = true;
+            _aimingProgress = 0f;
+            _isShooting = true;
             DOVirtual.Float(0f, 1f, reloadDuration, x => ReloadProgress = x)
                 .OnComplete(() =>
                 {
