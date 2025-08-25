@@ -27,6 +27,7 @@ public class GunUsableItem : UsableItem
     [SerializeField] private UnityEvent onShoot;
 
     private bool _isShooting;
+    private bool _isAiming;
     private int _currentShootCount;
     private int _currentAmmo;
     private float _spreadAngle = 0f;
@@ -35,6 +36,9 @@ public class GunUsableItem : UsableItem
     private float _currentDelay;
 
     public bool IsShootInProgress => _currentDelay > 0f;
+    public bool IsAiming => _isAiming;
+    public int CurrentAmmo => _currentAmmo;
+    public int TotalAmmo => ammoCapacity;
     public float SpreadAngle => _spreadAngle; 
     public float ShootProgress => 1f - (_currentDelay / shootDelay);
     public float EquipProgress => _equipTime;
@@ -84,6 +88,11 @@ public class GunUsableItem : UsableItem
                 _currentShootCount = shootCountPerAction;
             }
         }
+
+        if (actionId == ACTION_AIM)
+        {
+            _isAiming = true;
+        }
     }
     
     protected override void OnActionStopped(int actionId)
@@ -95,6 +104,11 @@ public class GunUsableItem : UsableItem
                 _isShooting = false;
             }
         }
+
+        if (actionId == ACTION_AIM)
+        {
+            _isAiming = false;
+        }
     }
 
     private void Start()
@@ -104,8 +118,17 @@ public class GunUsableItem : UsableItem
 
     private void Update()
     {
+        UpdateReload();
         UpdateShoot();
         UpdateSpread();
+    }
+
+    private void UpdateReload()
+    {
+        if (!_isShooting && _currentAmmo <= 0)
+        {
+            Reload();
+        }
     }
 
     private void UpdateShoot()
@@ -120,16 +143,9 @@ public class GunUsableItem : UsableItem
                 }
                 else
                 {
-                    if (_currentAmmo <= 0)
-                    {
-                        Reload();
-                    }
-                    else
-                    {
-                        _currentDelay = shootDelay;
-                        _currentShootCount--;
-                        Shoot();   
-                    }
+                    _currentDelay = shootDelay;
+                    _currentShootCount--;
+                    Shoot();
                 }
             }
             else
@@ -203,6 +219,7 @@ public class GunUsableItem : UsableItem
     {
         if (CanShoot())
         {
+            _isShooting  = true;
             DOVirtual.Float(0f, 1f, reloadDuration, x => ReloadProgress = x)
                 .OnComplete(() =>
                 {
