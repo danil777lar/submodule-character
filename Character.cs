@@ -17,6 +17,7 @@ namespace Larje.Character
 		private Health _health;
 		
 		public bool IsAlive => _health == null || _health.IsAlive;
+		public Health Health => _health;
 
 		public event Action EventDeath;
 
