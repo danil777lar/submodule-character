@@ -39,17 +39,10 @@ public class AIActionJump : AIAction
 
     private void UpdateInput()
     {
-        /*if (_pressed)
+        if (_pressed && _characterJump.IsInJump)
         {
             _pressed = false;
-            _released = true;
-            return;
         }
-
-        if (_released)
-        {
-            _released = false;
-        }*/
     }
 
     private CharacterJump.JumpInput GetInput()

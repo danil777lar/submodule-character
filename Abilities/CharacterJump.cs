@@ -19,6 +19,7 @@ namespace Larje.Character.Abilities
         private float _traveledHeight;
         private Vector3 _jumpPoint;
 
+        public bool IsInJump => _isJumping;
         public bool CanJump => _jumpsLeft > 0;
         public bool JumpInputValue { get; private set; }
         public PriotizedProperty<JumpInput> Input { get; } = new PriotizedProperty<JumpInput>();
