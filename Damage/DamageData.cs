@@ -8,5 +8,7 @@ public struct DamageData
     public Vector3 hitNormal;
     public Vector3 hitDirection;
     
+    public DamageType damageType;
+    
     public List<IDamageTarget> damagedTargets;
 }
