@@ -13,7 +13,7 @@ public class OpenScreenOnDie : MonoBehaviour
     {
         DIContainer.InjectTo(this);
         
-        Health health = GetComponent<Health>();
+        Health health = GetComponentInParent<Health>();
         health.EventDeath += OnDeath;
     }
 
