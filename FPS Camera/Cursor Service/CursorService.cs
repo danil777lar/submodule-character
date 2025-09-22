@@ -48,6 +48,12 @@ public class CursorService : Service
     public override void Init()
     {
     }
+    
+    public void ForceSetDirection(Vector3 direction)
+    {
+        Direction = direction.normalized;
+        _rotation = Vector2.zero;
+    }
 
     public void AddCursorVisibilityCondition(Func<bool> isVisible)
     {
