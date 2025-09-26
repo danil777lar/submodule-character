@@ -4,8 +4,10 @@ namespace Larje.Character
 {
     public class CharacterAbility : MonoBehaviour
     {
+        [SerializeField] private bool abilityEnabled = true;
+        
         public bool Initialized { get; private set; }
-        public bool Permitted => character.IsAlive && character.IsActive.Value;
+        public virtual bool Permitted => character.IsAlive && character.IsActive.Value && abilityEnabled;
         
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }

@@ -11,10 +11,12 @@ namespace Larje.Character.Abilities
         [SerializeField] private float lerpSpeedEnter = 10f;
         [SerializeField] private float lerpSpeedExit = 10f;
 
-        [Header("Collider")] [SerializeField] private bool resizeCollider = true;
+        [Header("Collider")] 
+        [SerializeField] private bool resizeCollider = true;
         [SerializeField] private float colliderHeightMultiplier = 0.4f;
 
-        [Header("Slide")] [SerializeField] private bool slideOnCrouch = false;
+        [Header("Slide")] 
+        [SerializeField] private bool slideOnCrouch = false;
         [SerializeField] private float slideSpeedMultiplier = 2f;
         [SerializeField] private bool multiplyDistanceOnMultiplier = false;
         [SerializeField] private float slideDistance = 5f;
