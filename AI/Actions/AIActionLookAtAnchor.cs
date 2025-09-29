@@ -31,6 +31,11 @@ public class AIActionLookAtAnchor : AIAction
     
     private Vector3 GetDirectionToCamera()
     {
+        if (_anchorLookAt == null)
+        {
+            return Vector3.forward;
+        }
+        
         return (_anchorLookAt.LookAt - Brain.Owner.transform.position).XZ().normalized;
     }
     

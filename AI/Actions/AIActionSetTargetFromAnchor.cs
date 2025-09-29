@@ -34,9 +34,13 @@ public class AIActionSetTargetFromAnchor : AIAction
 
     private void Update()
     {
-        if (ActionInProgress)
+        if (ActionInProgress && _anchor != null)
         {
             _target.position = _anchor.Position;
+        }
+        else
+        {
+            _target.position = Brain.Owner.transform.position;
         }
     }
 

@@ -9,6 +9,11 @@ public class AIDecisionFarFromAnchor : AIDecision
     
     public override bool Decide()
     {
+        if (_anchor == null)
+        {
+            return true;
+        }
+        
         return Vector3.Distance(Brain.Owner.transform.position, _anchor.Position) > distance;
     }
     
