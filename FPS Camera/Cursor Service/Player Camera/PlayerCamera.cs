@@ -5,7 +5,6 @@ using Cinemachine;
 using Larje.Core;
 using Larje.Core.Services;
 using Larje.Core.Tools.CompositeProperties;
-using MoreMountains.Tools;
 using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour, ICursorCamera

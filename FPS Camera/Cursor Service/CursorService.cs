@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Larje.Core;
-using MoreMountains.Tools;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
@@ -175,8 +174,6 @@ public class CursorService : Service
         Vector3 point = MainCamera.transform.position + Direction * 1f;
         ScreenPosition = MainCamera.WorldToScreenPoint(point);
         SendUpdateEvent(CallbackUpdateType.AfterCinemachine);
-        
-        MMDebug.DrawPoint(point, Color.red, 0.025f);
     }
 
     private void SendUpdateEvent(CallbackUpdateType callbackUpdateType)

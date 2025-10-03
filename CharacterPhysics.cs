@@ -1,7 +1,6 @@
 using System;
 using Larje.Character;
 using Larje.Core.Tools.CompositeProperties;
-using MoreMountains.Tools;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -47,6 +46,17 @@ public class CharacterPhysics : MonoBehaviour
     private Rigidbody _rigidbody;
     private CapsuleCollider _collider;
 
+    private Vector3 RBVelocity
+    {
+        #if UNITY_6
+        get => _rigidbody.linearVelocity;
+        set => _rigidbody.linearVelocity = value;
+        #else
+        get => _rigidbody.velocity;
+        set => _rigidbody.velocity = value;
+        #endif
+    } 
+        
     public bool Grounded => _grounded;
     public float Mass => _rigidbody.mass;
     public float ColliderRadiusCurrent => _collider.radius;
@@ -54,9 +64,9 @@ public class CharacterPhysics : MonoBehaviour
     public float ColliderRadiusDefault => _colliderRadiusDefault;
     public float ColliderHeightDefault => _colliderHeightDefault;
     public Vector3 ColliderCenter => _collider.center;
-    public Vector3 Velocity => _rigidbody.linearVelocity; 
-    public float VerticalSpeed => _rigidbody.linearVelocity.Y().magnitude; 
-    public float HorizontalSpeed => _rigidbody.linearVelocity.XZ().magnitude; 
+    public Vector3 Velocity => RBVelocity; 
+    public float VerticalSpeed => RBVelocity.Y().magnitude; 
+    public float HorizontalSpeed => RBVelocity.XZ().magnitude; 
     public FloatProduct ColliderHeightMultiplier { get; } = new FloatProduct();
     public FloatProduct ColliderRadiusMultiplier { get; } = new FloatProduct();
     public GameObject Ground => _groundHit.collider != null ? _groundHit.collider.gameObject : null;
@@ -66,7 +76,7 @@ public class CharacterPhysics : MonoBehaviour
 
     public void ResetVelocity()
     {
-        _rigidbody.linearVelocity = Vector3.zero;
+        RBVelocity = Vector3.zero;
     }
     
     public void AddForce(Vector3 force, ForceMode forceMode = ForceMode.Acceleration)
@@ -83,7 +93,7 @@ public class CharacterPhysics : MonoBehaviour
 
     public void TranslateVelocity(Vector3 direction)
     {
-        _rigidbody.linearVelocity = direction.normalized * _rigidbody.linearVelocity.magnitude;
+        RBVelocity = direction.normalized * RBVelocity.magnitude;
     }
     
     public bool Capsulecast(Vector3 vector, out RaycastHit hit, float radiusMultiplier = 1f, bool useOffset = true, bool removeInsideHits = true)
@@ -105,10 +115,6 @@ public class CharacterPhysics : MonoBehaviour
         }
 
         float radius = _collider.radius * radiusMultiplier;
-        
-        MMDebug.DrawPoint(bottom, gizmoColor, 0.1f);
-        MMDebug.DrawPoint(top, gizmoColor, 0.1f);
-        
         RaycastHit[] results = Physics.CapsuleCastAll(bottom, top, radius, vector.normalized, 
             vector.magnitude, collisionMask);
 
@@ -215,7 +221,7 @@ public class CharacterPhysics : MonoBehaviour
 
     private void UpdateFloating()
     {
-        Vector3 velocity = _rigidbody.linearVelocity;
+        Vector3 velocity = RBVelocity;
         Vector3 rayDirection = -transform.up;
         
         if (_grounded)
@@ -223,7 +229,7 @@ public class CharacterPhysics : MonoBehaviour
             Vector3 otherVelocity = Vector3.zero;
             if (_groundHit.rigidbody != null)
             {
-                otherVelocity = _groundHit.rigidbody.linearVelocity;
+                otherVelocity = _groundHit.rigidbody.velocity;
             }
             
             float rayDirVel = Vector3.Dot(rayDirection, velocity);
@@ -259,7 +265,6 @@ public class CharacterPhysics : MonoBehaviour
 
                     if (drawGizmos)
                     {
-                        MMDebug.DrawPoint(result.point, gizmoColor, 0.1f);
                         Debug.DrawRay(result.point, result.normal, gizmoColor);
                     }
 

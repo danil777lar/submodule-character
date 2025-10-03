@@ -13,9 +13,11 @@ public class AIActionAttack : AIAction
     [Space]
     [SerializeField] private float shootDelayMin;
     [SerializeField] private float shootDelayMax;
+    [Space]
+    [SerializeField] private EntityId targetEntityId;
 
-    [InjectEntity(EntityId.Player)] private Character _playerCharacter;
-    [InjectEntity(EntityId.Player)] private CharacterPhysics _playerPhysics;
+    private Character _targetCharacter;
+    private CharacterPhysics _targetPhysics;
     
     private float _delay;
     private Vector3 _targetPosition;
@@ -25,7 +27,7 @@ public class AIActionAttack : AIAction
     {
         if (_delay <= 0)
         {
-            if (_playerCharacter.IsAlive)
+            if (_targetCharacter.IsAlive)
             {
                 UpdateTargetPosition();
                 _itemUser.StartAction(0);
@@ -41,6 +43,10 @@ public class AIActionAttack : AIAction
     protected override void OnInitialized()
     {
         DIContainer.InjectTo(this);
+
+        _targetCharacter = DIContainer.GetEntityComponent<Character>(targetEntityId);
+        _targetPhysics = DIContainer.GetEntityComponent<CharacterPhysics>(targetEntityId);
+        
         if (_itemUser == null)
         {
             _itemUser = Brain.Owner.GetComponent<CharacterItemUser>();
@@ -59,7 +65,7 @@ public class AIActionAttack : AIAction
 
     private void UpdateTargetPosition()
     {
-        Vector3 playerCenter = _playerPhysics.transform.TransformPoint(_playerPhysics.ColliderCenter);
+        Vector3 playerCenter = _targetPhysics.transform.TransformPoint(_targetPhysics.ColliderCenter);
         
         bool mustHit = Random.value < hitChance;
         if (mustHit)

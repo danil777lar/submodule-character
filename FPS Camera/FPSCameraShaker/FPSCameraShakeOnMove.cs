@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Larje.Character.Abilities;
-using MoreMountains.Tools;
 using UnityEngine;
 
 public class FPSCameraShakeOnMove : MonoBehaviour
