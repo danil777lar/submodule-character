@@ -48,7 +48,7 @@ public class CharacterPhysics : MonoBehaviour
 
     private Vector3 RBVelocity
     {
-        #if UNITY_6
+        #if UNITY_6000_0_OR_NEWER
         get => _rigidbody.linearVelocity;
         set => _rigidbody.linearVelocity = value;
         #else
@@ -229,7 +229,11 @@ public class CharacterPhysics : MonoBehaviour
             Vector3 otherVelocity = Vector3.zero;
             if (_groundHit.rigidbody != null)
             {
+            #if UNITY_6000_0_OR_NEWER 
+                otherVelocity = _groundHit.rigidbody.linearVelocity;                
+            #else
                 otherVelocity = _groundHit.rigidbody.velocity;
+            #endif
             }
             
             float rayDirVel = Vector3.Dot(rayDirection, velocity);
