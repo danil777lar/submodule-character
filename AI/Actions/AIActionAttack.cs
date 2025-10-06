@@ -4,6 +4,7 @@ using Larje.Character.AI;
 using Larje.Core;
 using Larje.Core.Entities;
 using UnityEngine;
+using EntityId = Larje.Core.Entities.EntityId;
 using Random = UnityEngine.Random;
 
 public class AIActionAttack : AIAction
