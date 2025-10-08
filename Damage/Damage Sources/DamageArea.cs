@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DamageArea : MonoBehaviour
 {
-    [SerializeField] private int damageAmount = 10;
+    [SerializeField] private float damageAmount = 10;
     [SerializeField] private float damageInterval = 1f;
     
     private Dictionary<IDamageTarget, float> _damageTargets = new Dictionary<IDamageTarget, float>();

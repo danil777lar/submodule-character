@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class BulletProjectile : Projectile
 {
-    [SerializeField] private int damage = 10;
+    [SerializeField] private float damage = 10;
     [Space]
     [SerializeField] private float speed = 100f;
     [SerializeField] private float speedDrag = 0f;

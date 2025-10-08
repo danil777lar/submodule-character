@@ -5,14 +5,15 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour, IDamageTarget
 {
-    [SerializeField] private int initialHealth;
+    [SerializeField] private float initialHealth;
     [SerializeField] private List<GameObject> spawnOnDamage;
     [SerializeField] private List<GameObject> spawnOnDeath;
     
-    private int _currentHealth;
+    private float _currentHealth;
     
     public bool IsAlive => _currentHealth > 0;
     public float HealthPercent => (float)_currentHealth / (float)initialHealth;
+    public float CurrenHealth => _currentHealth;
     
     public event Action<DamageData> EventDamage;
     public event Action<DamageData> EventDeath;
