@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cinemachine;
 using Larje.Core;
 using Larje.Core.Services;
 using Larje.Core.Tools.CompositeProperties;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour, ICursorCamera

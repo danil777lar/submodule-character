@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
 using DG.Tweening;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class FPSCameraShaker : MonoBehaviour

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
 using Larje.Core;
+using Unity.Cinemachine;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 

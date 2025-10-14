@@ -1,4 +1,3 @@
-using Cinemachine;
 using Larje.Character;
 using UnityEngine;
 
