@@ -14,7 +14,7 @@ public class FPSCameraShaker : MonoBehaviour
     private float _defaultFov;
     private Vector3 _defaultPosition;
     private Vector3 _defaultRotation;
-    private CinemachineVirtualCamera _cam;
+    private CinemachineCamera _cam;
     
     private List<Shake> _shakes = new List<Shake>();
 
@@ -28,8 +28,8 @@ public class FPSCameraShaker : MonoBehaviour
         _defaultPosition = cameraPositionTransform.localPosition;
         _defaultRotation = cameraRotationTransform.localEulerAngles;
         
-        _cam = GetComponentInChildren<CinemachineVirtualCamera>();
-        _defaultFov = _cam.m_Lens.FieldOfView;
+        _cam = GetComponentInChildren<CinemachineCamera>();
+        _defaultFov = _cam.Lens.FieldOfView;
     }
 
     private void FixedUpdate()
@@ -78,7 +78,7 @@ public class FPSCameraShaker : MonoBehaviour
         
         cameraPositionTransform.localPosition = position;
         cameraRotationTransform.localEulerAngles = rotation;
-        _cam.m_Lens.FieldOfView = fov;
+        _cam.Lens.FieldOfView = fov;
         
         foreach (Shake shake in shakesToRemove)
         {

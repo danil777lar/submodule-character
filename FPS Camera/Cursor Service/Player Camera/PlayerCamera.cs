@@ -22,7 +22,7 @@ public class PlayerCamera : MonoBehaviour, ICursorCamera
     [SerializeField] private AnimationCurve speedCurve;
     
     [Header("Links")]
-    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private CinemachineCamera virtualCamera;
     [SerializeField] private List<Axis> axes;
     
 
