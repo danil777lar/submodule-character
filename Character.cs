@@ -21,7 +21,10 @@ namespace Larje.Character
 		private void Awake()
 		{
 			_health = GetComponentInChildren<Health>();
-			_health.EventDeath += OnDeath;
+            if (_health != null)
+            {
+                _health.EventDeath += OnDeath;
+            }
 		}
 
 		private void OnDeath(DamageData data)
