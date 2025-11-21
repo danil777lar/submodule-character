@@ -18,5 +18,13 @@ namespace Larje.Character.AI
                 brain.ResetBrain();
             };
         }
+
+        public void SetBrain(AIBrain brainPrefab)
+        {
+            transform.DestroyAllChildren();
+
+            AIBrain brain = Instantiate(brainPrefab, transform);
+            brain.ResetBrain();
+        }
     }
 }

@@ -5,13 +5,24 @@ public class AIActionSetBrain : AIAction
 {
     [Space] 
     [SerializeField] private string brainKey;
+    [SerializeField] private AIBrain brainPrefab;
 
     protected override void OnEnterState()
     {
         AIBrainLoader brainLoader = GetComponentInParent<AIBrainLoader>();
         if (brainLoader != null)
         {
-            brainLoader.SetBrain(brainKey);
+            if (brainPrefab != null)
+            {
+                brainLoader.SetBrain(brainPrefab);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(brainKey))
+            {
+                brainLoader.SetBrain(brainKey);
+                return;
+            }
         }
     }
 
