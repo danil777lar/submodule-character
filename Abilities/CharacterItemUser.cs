@@ -120,6 +120,11 @@ namespace Larje.Character
             DIContainer.InjectTo(this);
             RemoveItem(() => {});
         }
+
+        protected virtual void Update()
+        {
+            itemRoot.gameObject.SetActive(Permitted);
+        }
         
         public enum UsePositionOverride
         {

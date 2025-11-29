@@ -143,9 +143,13 @@ public class CharacterPhysics : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateColliderSize();
-        UpdateGravity();
-        UpdateFloating();
+        _rigidbody.isKinematic = !_character.IsActive;
+        if (_character.IsActive)
+        {
+            UpdateColliderSize();
+            UpdateGravity();
+            UpdateFloating();
+        }
     }
 
     private void OnDrawGizmos()

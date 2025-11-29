@@ -7,7 +7,7 @@ namespace Larje.Character
         [SerializeField] private bool abilityEnabled = true;
         
         public bool Initialized { get; private set; }
-        public virtual bool Permitted => character.IsAlive && character.IsActive.Value && abilityEnabled;
+        public virtual bool Permitted => character.IsAlive && character.IsActive && abilityEnabled;
         
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }
