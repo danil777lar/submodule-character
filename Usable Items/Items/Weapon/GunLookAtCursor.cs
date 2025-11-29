@@ -16,7 +16,10 @@ public class GunLookAtCursor : MonoBehaviour
 
     private void OnDestroy()
     {
-        _cursorService.RemoveCursorUpdatedListener(OnCursorUpdated);
+        if (_cursorService != null)
+        {
+            _cursorService.RemoveCursorUpdatedListener(OnCursorUpdated);
+        }
     }
 
     private void OnCursorUpdated(float deltaTime)

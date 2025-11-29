@@ -168,6 +168,11 @@ namespace Larje.Character.AI
 				return;
 			}
 
+            if (Owner != null && (!Owner.IsAlive || !Owner.IsActive))
+            {
+                return;
+            }
+
 			if (Time.time - _lastActionsUpdate > actionsFrequency)
 			{
 				CurrentState.PerformActions();

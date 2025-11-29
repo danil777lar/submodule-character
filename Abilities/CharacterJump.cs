@@ -80,7 +80,7 @@ namespace Larje.Character.Abilities
 
         private void FixedUpdate()
         {
-            if (Initialized)
+            if (Initialized && Permitted)
             {
                 if (_isJumping)
                 {

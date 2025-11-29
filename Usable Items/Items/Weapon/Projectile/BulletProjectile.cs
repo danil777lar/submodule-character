@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Larje.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,10 +15,14 @@ public class BulletProjectile : Projectile
     [SerializeField] private float destroyDelay = 0.1f;
     [SerializeField] private GameObject modelHolder;
     [SerializeField] private LayerMask hitLayer;
+    [Space]
+    [SerializeField] private List<GameStateType> activeInGameStates = new List<GameStateType> { GameStateType.Playing };
     [Space] 
     [SerializeField] private List<GameObject> spawnOnHit;
     [Space] 
     [SerializeField] private UnityEvent onHit;
+
+    [InjectService] private IGameStateService _gameStateService;
 
     private float _currentSpeed;
     private float _currentGravity;
@@ -26,6 +31,8 @@ public class BulletProjectile : Projectile
     
     public void Init(Vector3 position, Vector3 direction, Vector3 modelStartPosition)
     {
+        DIContainer.InjectTo(this);
+
         _currentLifetime = lifeTime;
         _currentSpeed = speed;
         _currentGravity = 0f;
@@ -41,7 +48,7 @@ public class BulletProjectile : Projectile
 
     private void FixedUpdate()
     {
-        if (_destroying)
+        if (_destroying || !activeInGameStates.Contains(_gameStateService.CurrentState))
         {
             return;
         }
