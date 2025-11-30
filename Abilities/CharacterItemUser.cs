@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Larje.Character
 {
-    public class CharacterItemUser : CharacterAbility
+    public class CharacterItemUser : CharacterAbility, ILevelObjectDataUser
     {
         [SerializeField] private Transform itemRoot;
         [SerializeField] private string overrideItemLayer;
@@ -16,11 +16,28 @@ namespace Larje.Character
 
         [InjectService] private CursorService _cursorService;
         
+        private Data _data;
         private UsableItem _currentItem;
 
         public UsableItem CurrentItem => _currentItem;
+        public System.Type DataType => typeof(Data);
+
         public PriotizedProperty<Vector3> OriginPosition;
         public PriotizedProperty<Vector3> TargetPosition;
+
+        public void InjectData(object data)
+        {
+            _data = (Data)data;
+            if (!string.IsNullOrEmpty(_data.currentItemKey))
+            {
+                SetItem(_data.currentItemKey);
+            }
+        }
+
+        public object ReadData()
+        {
+            return _data;
+        }
 
         public void StartAction(int actionId)
         {
@@ -38,15 +55,49 @@ namespace Larje.Character
         {
             if (!string.IsNullOrEmpty(itemKey))
             {
+                _data.currentItemKey = itemKey;
                 Addressables.LoadAssetAsync<GameObject>(itemKey).Completed += handle =>
                 {
                     UsableItem itemPrefab = handle.Result.GetComponent<UsableItem>();
-                    SetItem(itemPrefab);
+                    InstantiateItem(itemPrefab);
                 };
             }
         }
 
-        public void SetItem(UsableItem itemPrefab)
+        public void RemoveItem(Action onRemoved)
+        {
+            _data.currentItemKey = null;
+            if (_currentItem != null)
+            {
+                _currentItem.Unequip(() =>
+                {
+                    Destroy(_currentItem.gameObject);
+                    onRemoved?.Invoke();
+                });
+            }
+            else
+            {
+                onRemoved?.Invoke();
+            }
+        }
+        
+        protected override void OnInitialized()
+        {
+            DIContainer.InjectTo(this);
+
+            if (_data == null)
+            {
+                _data = new Data();
+                RemoveItem(() => {});
+            }
+        }
+
+        protected virtual void Update()
+        {
+            itemRoot.gameObject.SetActive(Permitted);
+        }
+
+        protected virtual void InstantiateItem(UsableItem itemPrefab)
         {
             RemoveItem(() =>
             {
@@ -99,39 +150,18 @@ namespace Larje.Character
             });
         }
 
-        public void RemoveItem(Action onRemoved)
-        {
-            if (_currentItem != null)
-            {
-                _currentItem.Unequip(() =>
-                {
-                    Destroy(_currentItem.gameObject);
-                    onRemoved?.Invoke();
-                });
-            }
-            else
-            {
-                onRemoved?.Invoke();
-            }
-        }
-        
-        protected override void OnInitialized()
-        {
-            DIContainer.InjectTo(this);
-            RemoveItem(() => {});
-        }
 
-        protected virtual void Update()
-        {
-            itemRoot.gameObject.SetActive(Permitted);
-        }
-        
         public enum UsePositionOverride
         {
             None,
             Camera,
             Cursor,
             ScriptDriven
+        }
+
+        public class Data
+        {
+            public string currentItemKey;
         }
     }
 }
