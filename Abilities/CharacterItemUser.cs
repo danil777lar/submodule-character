@@ -64,9 +64,13 @@ namespace Larje.Character
             }
         }
 
-        public void RemoveItem(Action onRemoved)
+        public void RemoveItem(bool changeKey, Action onRemoved)
         {
-            _data.currentItemKey = null;
+            if (changeKey)
+            {
+                _data.currentItemKey = null;
+            }
+
             if (_currentItem != null)
             {
                 _currentItem.Unequip(() =>
@@ -88,7 +92,7 @@ namespace Larje.Character
             if (_data == null)
             {
                 _data = new Data();
-                RemoveItem(() => {});
+                RemoveItem(false, () => {});
             }
         }
 
@@ -99,7 +103,7 @@ namespace Larje.Character
 
         protected virtual void InstantiateItem(UsableItem itemPrefab)
         {
-            RemoveItem(() =>
+            RemoveItem(false, () =>
             {
                 if (itemPrefab != null)
                 {
@@ -159,6 +163,7 @@ namespace Larje.Character
             ScriptDriven
         }
 
+        [Serializable]
         public class Data
         {
             public string currentItemKey;
