@@ -1,11 +1,12 @@
 using Larje.Core;
+using Larje.Core.Services;
 using Larje.Core.Services.UI;
 using ProjectConstants;
 using UnityEngine;
 
 public class SetStateOnDie : MonoBehaviour
 {
-    [SerializeField] private GameStateType stateType;
+    [SerializeField] private GameState gameState;
     
     [InjectService] private GameStateService _gameStateService;
     
@@ -19,6 +20,6 @@ public class SetStateOnDie : MonoBehaviour
 
     private void OnDeath(DamageData obj)
     {
-        _gameStateService.SetGameState(stateType);
+        _gameStateService.SetGameState(gameState);
     }
 }

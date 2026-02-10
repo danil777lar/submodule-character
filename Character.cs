@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using Larje.Core.Tools.CompositeProperties;
 using Larje.Core;
+using Larje.Core.Services;
+using Larje.Core.Tools.CompositeProperties;
 
 namespace Larje.Character
 {
@@ -12,7 +13,7 @@ namespace Larje.Character
 		[SerializeField] private Type _characterType;
         [Space]
         [SerializeField] private BoolComposite _isActive = new BoolComposite();
-        [SerializeField] private List<GameStateType> _activeInGameStates = new List<GameStateType>() { GameStateType.Playing };
+        [SerializeField] private List<GameState> _activeInGameStates = new List<GameState>();
 
         [InjectService] private IGameStateService _gameStateService;
 		

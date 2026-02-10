@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Larje.Core;
+using Larje.Core.Services;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,7 +17,7 @@ public class BulletProjectile : Projectile
     [SerializeField] private GameObject modelHolder;
     [SerializeField] private LayerMask hitLayer;
     [Space]
-    [SerializeField] private List<GameStateType> activeInGameStates = new List<GameStateType> { GameStateType.Playing };
+    [SerializeField] private List<GameState> activeInGameStates = new List<GameState>();
     [Space] 
     [SerializeField] private List<GameObject> spawnOnHit;
     [Space] 
