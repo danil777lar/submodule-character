@@ -8,7 +8,7 @@ public class SetStateOnDie : MonoBehaviour
 {
     [SerializeField] private GameState gameState;
     
-    [InjectService] private GameStateService _gameStateService;
+    [InjectService] private IGameStateService _gameStateService;
     
     private void Start()
     {
