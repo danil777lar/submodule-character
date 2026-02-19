@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Larje.Core;
+using Larje.Core.Services;
 using Unity.Cinemachine;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 [BindService(typeof(CursorService))]
@@ -15,6 +15,7 @@ public class CursorService : Service
     [SerializeField] private CursorUpdateType cursorUpdateType = CursorUpdateType.Normal;
     
     [InjectService] private InputService _inputService;
+    [InjectService] private IGameStateService _gameStateService;
     
     private float _deltaTime;
     private Camera _camera;
