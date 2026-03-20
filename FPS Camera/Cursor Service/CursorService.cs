@@ -51,8 +51,18 @@ public class CursorService : Service
     
     public void ForceSetDirection(Vector3 direction)
     {
-        Direction = direction.normalized;
-        _rotation = Vector2.zero;
+        if (TryGetCurrentCamera(out ICursorCamera cursorCamera))
+        {    
+            if (direction.sqrMagnitude < 0.0001f)
+                return;
+
+            direction.Normalize();
+
+            Quaternion targetRotation = Quaternion.FromToRotation(cursorCamera.DefaultDirection, direction);
+            Vector3 euler = targetRotation.eulerAngles;
+            _rotation = new Vector2(euler.x, euler.y);
+            Direction = direction;
+        }
     }
 
     public void AddCursorVisibilityCondition(Func<bool> isVisible)
