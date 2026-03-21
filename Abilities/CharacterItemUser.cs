@@ -20,6 +20,8 @@ namespace Larje.Character
         private UsableItem _currentItem;
 
         public UsableItem CurrentItem => _currentItem;
+
+        public GameObject GameObject => gameObject;
         public System.Type DataType => typeof(Data);
 
         public PriotizedProperty<Vector3> OriginPosition;
@@ -28,7 +30,7 @@ namespace Larje.Character
         public void InjectData(object data)
         {
             _data = (Data)data;
-            if (!string.IsNullOrEmpty(_data.currentItemKey))
+            if (!string.IsNullOrEmpty(_data?.currentItemKey))
             {
                 SetItem(_data.currentItemKey);
             }
