@@ -8,7 +8,7 @@ namespace Larje.Character
     {
         [InjectService] private IPlayerProviderService _playerProviderService;
 
-        private void Start()
+        private void Awake()
         {
             DIContainer.InjectTo(this);        
 
