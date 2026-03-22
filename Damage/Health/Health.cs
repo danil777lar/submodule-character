@@ -15,7 +15,7 @@ public class Health : MonoBehaviour, IDamageTarget
     
     public bool IsAlive => _currentHealth > 0;
     public float HealthPercent => (float)_currentHealth / (float)initialHealth;
-    public float CurrenHealth => _currentHealth;
+    public float CurrentHealth => _currentHealth;
     public float InitialHealth => initialHealth;
     
     public event Action<DamageData> EventDamage;
