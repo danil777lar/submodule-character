@@ -11,7 +11,6 @@ namespace Larje.Character
         
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }
-        
 
         private void Start()
         {

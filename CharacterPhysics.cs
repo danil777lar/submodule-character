@@ -7,6 +7,10 @@ using UnityEngine.Serialization;
 
 public class CharacterPhysics : MonoBehaviour
 {
+    [Header("Options")]
+    [SerializeField] private bool disableCollisionsWhenInactive = true;
+    [SerializeField] private bool kinematicWhenInactive = true;
+
     [Header("Contacts")]
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private float raycastOffset = 0.1f;
@@ -143,7 +147,16 @@ public class CharacterPhysics : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rigidbody.isKinematic = !_character.IsActive;
+        if (disableCollisionsWhenInactive)
+        {
+            _collider.enabled = _character.IsActive;
+        }
+
+        if (kinematicWhenInactive)
+        {
+            _rigidbody.isKinematic = !_character.IsActive;
+        }
+
         if (_character.IsActive)
         {
             UpdateColliderSize();
