@@ -11,7 +11,7 @@ public class AIDecisionGrounded : AIDecision
         return _grounded;
     }
     
-    protected override void OnInitialize()
+    protected override void OnInitialized()
     {
         _physics = Brain.Owner.GetComponent<CharacterPhysics>();   
     }

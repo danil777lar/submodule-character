@@ -20,7 +20,7 @@ namespace Larje.Character.AI
 		
 		public void Initialization()
 		{
-			OnInitialize();
+			OnInitialized();
 		}
 
 		public void EnterState()
@@ -35,7 +35,7 @@ namespace Larje.Character.AI
 			OnExitState();
 		}
 
-		protected virtual void OnInitialize()
+		protected virtual void OnInitialized()
 		{
 			
 		}

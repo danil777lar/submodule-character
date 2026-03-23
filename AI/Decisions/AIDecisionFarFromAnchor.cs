@@ -17,7 +17,7 @@ public class AIDecisionFarFromAnchor : AIDecision
         return Vector3.Distance(Brain.Owner.transform.position, _anchor.Position) > distance;
     }
     
-    protected override void OnInitialize()
+    protected override void OnInitialized()
     {
         _anchor = GetComponentInParent<IAIAnchorPosition>();
     }
