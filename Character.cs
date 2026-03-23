@@ -18,6 +18,7 @@ namespace Larje.Character
         [InjectService] private IGameStateService _gameStateService;
 		
 		private Health _health;
+        private Dictionary<System.Type, CharacterAbility> _abilities = new Dictionary<System.Type, CharacterAbility>();
 		
 		public bool IsAlive => _health == null || _health.IsAlive;
         public bool IsActive => _isActive.Value && _activeInGameStates.Contains(_gameStateService.CurrentState);
@@ -27,6 +28,23 @@ namespace Larje.Character
         public BoolComposite IsActiveComposite => _isActive;
 
 		public event Action EventDeath;
+
+        public T FindAbility<T>() where T : CharacterAbility
+        {
+            T ability = null;
+
+            if (_abilities.ContainsKey(typeof(T)))
+            {
+                ability = _abilities[typeof(T)] != null ? _abilities[typeof(T)] as T : null;
+            }
+            else
+            {
+                ability = GetComponentInChildren<T>();
+                _abilities.Add(typeof(T), ability);
+            }
+
+            return ability;
+        }
 
 		private void Awake()
 		{

@@ -12,12 +12,25 @@ namespace Larje.Character
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }
 
-        private void Start()
+        private void Awake()
         {
             character = GetComponentInParent<Character>();
             physics = GetComponentInParent<CharacterPhysics>();
 
+            if (character == null)
+            {
+                Debug.LogError($"CharacterAbility {name} requires a Character component in its parents.", this);
+                return;
+            }
+
+            if (physics == null)
+            {
+                Debug.LogError($"CharacterAbility {name} requires a CharacterPhysics component in its parents.", this);
+                return;
+            }
+
             Initialized = true;
+
             OnInitialized();
         }
 
