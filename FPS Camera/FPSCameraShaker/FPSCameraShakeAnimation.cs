@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "FPSCameraShakeAnimation", menuName = "EmployeeOfTheMonth/FPSCameraShakeAnimation")]
+[CreateAssetMenu(fileName = "FPSCameraShakeAnimation", menuName = "Larje/Character/FPSCameraShakeAnimation")]
 public class FPSCameraShakeAnimation : ScriptableObject
 {
     [field: SerializeField] public float Duration { get; private set; } = 1f;
