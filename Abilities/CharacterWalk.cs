@@ -48,8 +48,13 @@ namespace Larje.Character.Abilities
                     break;
             }
 
-            Vector3 direction = (right * input.x + forward * input.y).normalized;
-            return new Vector2(direction.x, direction.z);
+            Vector3 direction = right * input.x + forward * input.y;
+            Vector2 clampedDirection = new Vector2(direction.x, direction.z);
+            if (clampedDirection.magnitude > 1f)
+            {
+                clampedDirection.Normalize();
+            }
+            return clampedDirection;
         }
 
         public void ClampCurrentSpeed()
