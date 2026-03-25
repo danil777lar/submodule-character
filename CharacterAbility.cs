@@ -12,6 +12,8 @@ namespace Larje.Character
         protected Character character { get; private set; }
         protected CharacterPhysics physics { get; private set; }
 
+        public Transform Root => character.transform;
+
         private void Awake()
         {
             character = GetComponentInParent<Character>();
