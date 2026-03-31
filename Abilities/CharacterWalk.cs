@@ -9,15 +9,17 @@ namespace Larje.Character.Abilities
     {
         [SerializeField] public BoolComposite canWalk;
         [SerializeField] public DirectionType directionType = DirectionType.World;
+
         [Header("Movement")] 
         [SerializeField] private float walkSpeed = 5f;
         [SerializeField] private Vector3 forceScale = new Vector3(1f, 0f, 1f);
 
         [Header("Acceleration")] 
         [SerializeField] private Acceleration defaultAcceleration;
-
         [SerializeField] private Acceleration ungroundedAcceleration;
-        [Space] [SerializeField] private bool dropSpeedOnGrounded = true;
+
+        [Space] 
+        [SerializeField] private bool dropSpeedOnGrounded = true;
         [SerializeField, Range(-1f, 1f)] private float dropSpeedOnGroundedDot = 0f;
 
         private Vector3 _goalVelocity;

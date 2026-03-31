@@ -21,7 +21,7 @@ namespace Larje.Character
         private Dictionary<System.Type, CharacterAbility> _abilities = new Dictionary<System.Type, CharacterAbility>();
 		
 		public bool IsAlive => _health == null || _health.IsAlive;
-        public bool IsActive => _isActive.Value && _activeInGameStates.Contains(_gameStateService.CurrentState);
+        public bool IsActive => _isActive.Value && IsActiveInCurrentGameState();
         public Type CharacterType => _characterType; 
 		public Health Health => _health;
 
@@ -61,6 +61,20 @@ namespace Larje.Character
 		{
 			EventDeath?.Invoke();
 		}
+
+        private bool IsActiveInCurrentGameState()
+        {
+            bool isActive = false;
+            foreach (GameState gameState in _activeInGameStates)
+            {
+                if (_gameStateService.CurrentState.name == gameState.name)
+                {
+                    isActive = true;
+                    break;
+                }
+            }
+            return isActive;
+        }
 	}
 
 	public enum Type
