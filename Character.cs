@@ -23,7 +23,17 @@ namespace Larje.Character
 		public bool IsAlive => _health == null || _health.IsAlive;
         public bool IsActive => _isActive.Value && IsActiveInCurrentGameState();
         public Type CharacterType => _characterType; 
-		public Health Health => _health;
+		public Health Health 
+        {
+            get
+            {
+                if (_health == null)
+                {
+                    _health = GetComponentInChildren<Health>();
+                }
+                return _health;
+            }
+        }
 
         public BoolComposite IsActiveComposite => _isActive;
 
@@ -50,10 +60,9 @@ namespace Larje.Character
 		{
             DIContainer.InjectTo(this);
 
-			_health = GetComponentInChildren<Health>();
-            if (_health != null)
+            if (Health != null)
             {
-                _health.EventDeath += OnDeath;
+                Health.EventDeath += OnDeath;
             }
 		}
 
