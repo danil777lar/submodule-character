@@ -30,6 +30,19 @@ public class Health : MonoBehaviour, IDamageTarget
         }
     }
 
+    public void Revive(float healthPercent = 1f)
+    {
+        _currentHealth = initialHealth * healthPercent;
+    }
+
+    public void Heal(float amount)
+    {
+        if (IsAlive)
+        {
+            _currentHealth = Mathf.Min(_currentHealth + amount, initialHealth);
+        }
+    }
+
     public void SendDamage(DamageData damageData)
     {
         if (IsAlive)
