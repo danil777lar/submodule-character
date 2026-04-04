@@ -20,6 +20,7 @@ public class Health : MonoBehaviour, IDamageTarget
     
     public event Action<DamageData> EventDamage;
     public event Action<DamageData> EventDeath;
+    public event Action EventRevived;
 
     public void SetInitialHealth(float health, bool setCurrent = true)
     {
@@ -33,6 +34,7 @@ public class Health : MonoBehaviour, IDamageTarget
     public void Revive(float healthPercent = 1f)
     {
         _currentHealth = initialHealth * healthPercent;
+        EventRevived?.Invoke();
     }
 
     public void Heal(float amount)
