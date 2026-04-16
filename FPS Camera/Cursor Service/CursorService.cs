@@ -10,7 +10,10 @@ using UnityEngine;
 public class CursorService : Service
 {
     [SerializeField] private float sensitivity = 1.0f;
-    [SerializeField] private float speed = 1.0f;
+    [Header("Smooth")]
+    [SerializeField] private bool useSmooth = true;
+    [SerializeField] private float rotationSharpness = 10f;
+    [Space]
     [SerializeField] private float sensitivityDecreaseZone = 0.75f;
     [SerializeField] private CursorUpdateType cursorUpdateType = CursorUpdateType.Normal;
     
@@ -39,6 +42,7 @@ public class CursorService : Service
         }
     }
 
+    public bool StaticCursor => TryGetCurrentCamera(out ICursorCamera cursorCamera) && cursorCamera.StaticCursor;
     public Vector3 Origin => MainCamera.transform.position;
     public Vector3 Direction { get; private set; }
     public Vector2 ScreenPosition { get; private set; }
@@ -163,6 +167,10 @@ public class CursorService : Service
             else
             {
                 Vector2 delta = _delta;
+                if (useSmooth)
+                {
+                    delta *= deltaTime * rotationSharpness;
+                }
                 _delta -= delta;
 
                 _rotation.y = RotateAxis(_rotation.y, delta.x, cursorCamera.RotationLimitMin.y,

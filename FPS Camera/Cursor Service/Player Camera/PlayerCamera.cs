@@ -11,7 +11,9 @@ public class PlayerCamera : MonoBehaviour, ICursorCamera
 {
     [SerializeField] public BoolComposite permitted = new BoolComposite();
     [SerializeField] private bool resetDirectionOnSelect = false;
+
     [Header("Limits")]
+    [SerializeField] private bool staticCursor = false;
     [SerializeField] private Vector2 limitMin = new Vector2(-90f, -90f);
     [SerializeField] private Vector2 limitMax = new Vector2(90f, 90f);
     
@@ -29,6 +31,7 @@ public class PlayerCamera : MonoBehaviour, ICursorCamera
     [InjectService] private CursorService _cursorService;
 
     public bool Permitted => permitted.Value;
+    public bool StaticCursor => staticCursor;
     public int Priority => virtualCamera.Priority;
     public bool IsCurrent => _cursorService.IsCurrent(this);
     public Vector3 DefaultDirection { get; private set; }

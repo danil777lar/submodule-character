@@ -5,6 +5,7 @@ using UnityEngine;
 public interface ICursorCamera
 {
     public bool Permitted { get; }
+    public bool StaticCursor { get; }
     public int Priority { get; }
     
     public Vector3 DefaultDirection { get; }
